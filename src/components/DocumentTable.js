@@ -17,9 +17,7 @@ function DocumentTable({ documents }) {
             <td>{doc.title}</td>
             <td>{doc.category}</td>
             <td>{doc.description}</td>
-            <td>
-              {doc.url}>
-            </td>
+            <td><a href={doc.url} target="_blank" rel="noopener noreferrer">Preview</a></td>
           </tr>
         ))}
       </tbody>
