@@ -1,5 +1,4 @@
 import React from "react";
-
 function DocumentTable({ documents }) {
   return (
     <table className="doc-table">
