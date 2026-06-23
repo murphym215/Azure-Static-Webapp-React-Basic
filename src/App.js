@@ -1,11 +1,29 @@
-import React, { useState } from "react";
-import documents from "./data/documents.json";
+import React, { useState, useEffect } from "react";
 import DocumentCard from "./components/DocumentCard";
 import DocumentTable from "./components/DocumentTable";
 import "./App.css";
 
 function App() {
+  const [documents, setDocuments] = useState([]);
   const [view, setView] = useState("cards");
+  
+  useEffect(() => {
+    fetch("/api/documents")
+      .then(async (res) => {
+        const text = await res.text();  
+        try {
+          const data = JSON.parse(text);
+          setDocuments(data);
+        } catch (e) {
+          console.error("NOT JSON RESPONSE:", text);
+        }
+      })
+      .catch((err) => {
+        console.error("FETCH ERROR:", err);
+      });
+  }, []);
+  
+
   return (
     <div className="container">
       <h1>Document Catalog</h1>

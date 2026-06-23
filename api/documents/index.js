@@ -3,7 +3,7 @@ const { BlobServiceClient } = require("@azure/storage-blob");
 module.exports = async function (context, req) {
   try {
     const connectionString = process.env.AzureWebJobsStorage;
-    const containerName = "docs"; 
+    const containerName = "mmpublicdocuments"; 
     const blobServiceClient =
       BlobServiceClient.fromConnectionString(connectionString);
 
@@ -31,15 +31,17 @@ module.exports = async function (context, req) {
       headers: {
         "Content-Type": "application/json"
       },
-      body: documents
+      body: documents || []
     };
 
   } catch (error) {
-    context.log.error("Error retrieving blobs:", error);
-
+    context.log.error("Error retrieving blobs:", error);    
     context.res = {
       status: 500,
-      body: "Error retrieving documents"
+      body: JSON.stringify({
+        error: "Error retrieving documents",
+        details: error.message
+      })
     };
   }
 };
