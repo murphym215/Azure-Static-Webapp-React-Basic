@@ -31,15 +31,17 @@ module.exports = async function (context, req) {
       headers: {
         "Content-Type": "application/json"
       },
-      body: documents
+      body: documents || []
     };
 
   } catch (error) {
-    context.log.error("Error retrieving blobs:", error);
-
+    context.log.error("Error retrieving blobs:", error);    
     context.res = {
       status: 500,
-      body: "Error retrieving documents"
+      body: JSON.stringify({
+        error: "Error retrieving documents",
+        details: error.message
+      })
     };
   }
 };
