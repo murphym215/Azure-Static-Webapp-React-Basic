@@ -3,7 +3,7 @@ const { BlobServiceClient } = require("@azure/storage-blob");
 module.exports = async function (context, req) {
   try {
     const connectionString = process.env.AzureWebJobsStorage;
-    const containerName = "docs"; 
+    const containerName = "mmpublicdocuments"; 
     const blobServiceClient =
       BlobServiceClient.fromConnectionString(connectionString);
 
