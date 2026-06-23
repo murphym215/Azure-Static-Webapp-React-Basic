@@ -17,7 +17,6 @@ function App() {
   return (
     <div className="container">
       <h1>Document Catalog</h1>
-
       <div className="toolbar">
         <button onClick={() => setView("cards")}>Card View</button>
         <button onClick={() => setView("table")}>Table View</button>
