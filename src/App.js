@@ -6,13 +6,23 @@ import "./App.css";
 function App() {
   const [documents, setDocuments] = useState([]);
   const [view, setView] = useState("cards");
-
+  
   useEffect(() => {
     fetch("/api/documents")
-      .then((res) => res.json())
-      .then((data) => setDocuments(data))
-      .catch((err) => console.error("Error loading documents:", err));
+      .then(async (res) => {
+        const text = await res.text();  
+        try {
+          const data = JSON.parse(text);
+          setDocuments(data);
+        } catch (e) {
+          console.error("NOT JSON RESPONSE:", text);
+        }
+      })
+      .catch((err) => {
+        console.error("FETCH ERROR:", err);
+      });
   }, []);
+  
 
   return (
     <div className="container">
