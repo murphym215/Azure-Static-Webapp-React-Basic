@@ -1,0 +1,10 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "dependencies": {
+    "@azure/storage-blob": "^12.19.0"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}
