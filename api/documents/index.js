@@ -9,7 +9,6 @@ module.exports = async function (context, req) {
 
     const containerClient =
       blobServiceClient.getContainerClient(containerName);
-
     const documents = [];
 
     for await (const blob of containerClient.listBlobsFlat()) {
