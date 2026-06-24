@@ -1,47 +1,41 @@
-const { BlobServiceClient } = require("@azure/storage-blob");
-
 module.exports = async function (context, req) {
   try {
-    const connectionString = process.env.AzureWebJobsStorage;
-    const containerName = "mmpublicdocuments"; 
-    const blobServiceClient =
-      BlobServiceClient.fromConnectionString(connectionString);
+    const account = process.env.STORAGE_ACCOUNT_NAME;
+    const container = "docs"; // change if needed
+    const sas = process.env.STORAGE_SAS_TOKEN; // NEW
 
-    const containerClient =
-      blobServiceClient.getContainerClient(containerName);
+    const url = `https://${account}.blob.core.windows.net/${container}?restype=container&comp=list&${sas}`;
 
-    const documents = [];
+    const response = await fetch(url);
+    const xmlText = await response.text();
 
-    for await (const blob of containerClient.listBlobsFlat()) {
-      const fileName = blob.name;
+    // Parse XML
+    const blobList = [];
+    const matches = xmlText.match(/<Name>(.*?)<\/Name>/g);
 
-      documents.push({
-        id: fileName,
-        title: fileName,
-        description: "Document from Blob Storage",
-        category: "General",
-        url: `https://${process.env.STORAGE_ACCOUNT_NAME}.blob.core.windows.net/${containerName}/${fileName}`,
-        size: blob.properties.contentLength,
-        lastModified: blob.properties.lastModified
+    if (matches) {
+      matches.forEach((match) => {
+        const name = match.replace("<Name>", "").replace("</Name>", "");
+        blobList.push({
+          id: name,
+          title: name,
+          url: `https://${account}.blob.core.windows.net/${container}/${name}`
+        });
       });
     }
 
     context.res = {
       status: 200,
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: documents || []
+      headers: { "Content-Type": "application/json" },
+      body: blobList
     };
 
   } catch (error) {
-    context.log.error("Error retrieving blobs:", error);    
+    context.log.error("ERROR:", error);
+
     context.res = {
       status: 500,
-      body: JSON.stringify({
-        error: "Error retrieving documents",
-        details: error.message
-      })
+      body: error.toString()
     };
   }
 };
