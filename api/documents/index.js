@@ -1,22 +1,37 @@
+const https = require("https");
+
 module.exports = async function (context, req) {
   try {
     const account = process.env.STORAGE_ACCOUNT_NAME;
-    const container = "docs"; // change if needed
-    const sas = process.env.STORAGE_SAS_TOKEN; // NEW
+    const container = "mmpublicdocuments";
+    const sas = process.env.STORAGE_SAS_TOKEN;
 
     const url = `https://${account}.blob.core.windows.net/${container}?restype=container&comp=list&${sas}`;
 
-    const response = await fetch(url);
-    const xmlText = await response.text();
+    const xml = await new Promise((resolve, reject) => {
+      https.get(url, (res) => {
+        let data = "";
 
-    // Parse XML
-    const blobList = [];
-    const matches = xmlText.match(/<Name>(.*?)<\/Name>/g);
+        res.on("data", (chunk) => {
+          data += chunk;
+        });
+
+        res.on("end", () => {
+          resolve(data);
+        });
+
+      }).on("error", (err) => {
+        reject(err);
+      });
+    });
+
+    const docs = [];
+    const matches = xml.match(/<Name>(.*?)<\/Name>/g);
 
     if (matches) {
-      matches.forEach((match) => {
-        const name = match.replace("<Name>", "").replace("</Name>", "");
-        blobList.push({
+      matches.forEach((m) => {
+        const name = m.replace("<Name>", "").replace("</Name>", "");
+        docs.push({
           id: name,
           title: name,
           url: `https://${account}.blob.core.windows.net/${container}/${name}`
@@ -27,15 +42,15 @@ module.exports = async function (context, req) {
     context.res = {
       status: 200,
       headers: { "Content-Type": "application/json" },
-      body: blobList
+      body: docs
     };
 
-  } catch (error) {
-    context.log.error("ERROR:", error);
+  } catch (err) {
+    context.log.error("ERROR:", err);
 
     context.res = {
       status: 500,
-      body: error.toString()
+      body: err.toString()
     };
   }
 };
