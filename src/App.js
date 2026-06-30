@@ -6,18 +6,29 @@ import "./App.css";
 function App() {
   const [documents, setDocuments] = useState([]);
   const [view, setView] = useState("cards");
+  const [searchText, setSearchText] = useState("");
   
 
-useEffect(() => {
-  fetch("https://function-app-api-get-documents-ddc4hac0gdfjf3h2.eastus-01.azurewebsites.net/api/documents")
-    .then((res) => res.json())
-    .then((data) => setDocuments(data))
-    .catch((err) => console.error("Error loading documents:", err));
-}, []);  
+  useEffect(() => {
+    fetch("https://function-app-api-get-documents-ddc4hac0gdfjf3h2.eastus-01.azurewebsites.net/api/documents")
+      .then((res) => res.json())
+      .then((data) => setDocuments(data))
+      .catch((err) => console.error("Error loading documents:", err));
+  }, []);
+  
+  const filteredDocuments = documents.filter((doc) => doc.title.toLowerCase().includes(searchText.toLowerCase()));
 
   return (
     <div className="container">
       <h1>Document Catalog Test</h1>
+      {/* search box */}      
+      <input
+        type="text"
+        placeholder="Search documents..."
+        value={searchText}
+        onChange={(e) => setSearchText(e.target.value)}
+      />
+
       <div className="toolbar">
         <button onClick={() => setView("cards")}>Card View</button>
         <button onClick={() => setView("table")}>Table View</button>
@@ -25,7 +36,7 @@ useEffect(() => {
 
       {view === "cards" ? (
         <div className="card-grid">
-          {documents.map((doc) => (
+          {filteredDocuments.map((doc) => (
             <DocumentCard key={doc.id} doc={doc} />
           ))}
         </div>
