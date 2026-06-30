@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import DocumentCard from "./components/DocumentCard";
 import DocumentTable from "./components/DocumentTable";
+import SearchBox from "./components/SearchBox";
 import "./App.css";
 
 function App() {
@@ -20,14 +21,12 @@ function App() {
 
   return (
     <div className="container">
-      <h1>Document Catalog Test</h1>
+      <h1>Document Catalog</h1>
       {/* search box */}      
-      <input
-        type="text"
-        placeholder="Search documents..."
-        value={searchText}
-        onChange={(e) => setSearchText(e.target.value)}
-      />
+    <SearchBox 
+      value={searchText}
+      onChange={setSearchText}
+    />
 
       <div className="toolbar">
         <button onClick={() => setView("cards")}>Card View</button>
@@ -41,7 +40,7 @@ function App() {
           ))}
         </div>
       ) : (
-        <DocumentTable documents={documents} />
+        <DocumentTable documents={filteredDocuments} />
       )}
     </div>
   );
