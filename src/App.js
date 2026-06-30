@@ -9,7 +9,7 @@ function App() {
   
 
 useEffect(() => {
-  fetch("https://function-app-api-get-documents.azurewebsites.net/api/documents")
+  fetch("https://function-app-api-get-documents-ddc4hac0gdfjf3h2.eastus-01.azurewebsites.net/api/documents")
     .then((res) => res.json())
     .then((data) => setDocuments(data))
     .catch((err) => console.error("Error loading documents:", err));
