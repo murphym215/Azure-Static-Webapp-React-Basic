@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import DocumentCard from "./components/DocumentCard";
 import DocumentTable from "./components/DocumentTable";
 import SearchBox from "./components/SearchBox";
+import Toolbar from "./components/Toolbar";
 import "./App.css";
 
 function App() {
@@ -21,17 +22,15 @@ function App() {
 
   return (
     <div className="container">
-      <h1>Document Catalog</h1>
-      {/* search box */}      
-    <SearchBox 
-      value={searchText}
-      onChange={setSearchText}
-    />
-
-      <div className="toolbar">
-        <button onClick={() => setView("cards")}>Card View</button>
-        <button onClick={() => setView("table")}>Table View</button>
-      </div>
+      <h1>Document Catalog with Toolbar</h1>
+      {/* Toolbar with search box and buttons */}
+      
+      <Toolbar
+        searchText={searchText}
+        setSearchText={setSearchText}
+        view={view}
+        setView={setView}
+      />
 
       {view === "cards" ? (
         <div className="card-grid">
