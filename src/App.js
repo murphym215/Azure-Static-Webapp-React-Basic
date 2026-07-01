@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import DocumentCard from "./components/DocumentCard";
 import DocumentTable from "./components/DocumentTable";
-import SearchBox from "./components/SearchBox";
 import Toolbar from "./components/Toolbar";
 import "./App.css";
 
